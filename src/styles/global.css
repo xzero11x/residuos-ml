@@ -86,3 +86,8 @@ section.hero h1{text-shadow:none;color:var(--ink)}section.hero .lead{color:var(-
 .qcard{background:var(--alt);border-radius:24px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:150px}
 .qcard p{margin:0;font-size:19px;line-height:1.35;letter-spacing:-.01em;font-weight:500;overflow-wrap:anywhere}.qcard p:before{content:'“';color:var(--blue);font-size:30px;line-height:0;vertical-align:-8px;margin-right:4px}
 .qwho{display:flex;align-items:center;gap:10px}.qwho span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#e8f1fd;color:var(--blue);font-weight:600;font-size:13px;flex:none}.qwho small{color:var(--mut);font-size:13px}
+
+.more-row{text-align:center;margin-top:28px}.ghost-btn{background:var(--alt);border:0;border-radius:980px;padding:12px 26px;font-size:16px;color:var(--blue)}.ghost-btn:hover{background:#ececf0}
+.privacy-note{text-align:center;color:var(--mut);font-size:13px;max-width:560px;margin:22px auto 0}
+.qgrid{grid-template-columns:repeat(3,1fr)}@media(max-width:860px){.qgrid{grid-template-columns:1fr}}
+#close-report{border:0;background:var(--alt);color:var(--ink);width:32px;height:32px;border-radius:50%;font-size:20px}

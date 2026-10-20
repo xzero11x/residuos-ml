@@ -6,7 +6,8 @@ export const prerender = true;
 <html lang="es">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="description" content="Prototipo del sistema de gestión del conocimiento: incidencias, riesgo por sector y semana, lecciones aprendidas, indicadores y canal comunitario."/><title>Panel · BaguaLimpia</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"/></head>
 <body>
-<div class="app">
+<div class="gate" id="gate" hidden><form class="gate-card" id="gate-form"><a class="logo" href="/"><span><b>bagua</b>limpia</span></a><h2>Acceso autorizado</h2><p class="m">Este panel es para el personal que gestiona el sistema.</p><label for="gate-pass">Contraseña</label><input id="gate-pass" type="password" autocomplete="current-password" required placeholder="Contraseña de administrador"/><p id="gate-msg" class="m" role="status"></p><button class="solid" type="submit">Entrar</button><a class="back" href="/">‹ Volver al inicio</a></form></div>
+<div class="app" id="app" hidden>
   <aside class="side">
     <a class="logo" href="/"><span><b>bagua</b>limpia</span></a>
     <nav id="tabs">
@@ -15,10 +16,11 @@ export const prerender = true;
       <button data-tab="predicciones">✧ Riesgo semanal <em>ML</em></button>
       <button data-tab="conocimiento">▭ Lecciones</button>
       <button data-tab="reportes">▂▅▇ Indicadores</button>
-      <button data-tab="blog">✎ Canal comunitario <em class="live">REAL</em></button>
-      <button data-tab="sugerencias">❝ Sugerencias rápidas <em class="live">REAL</em></button>
+      <button data-tab="buzon">✉ Reportes ciudadanos <em class="live">REAL</em></button>
+      <button data-tab="sugerencias">❝ Sugerencias <em class="live">REAL</em></button>
     </nav>
     <a class="back" href="/">‹ Volver al inicio</a>
+    <button class="back out" id="logout" type="button">Cerrar sesión</button>
   </aside>
 
   <main class="main">
@@ -72,34 +74,33 @@ export const prerender = true;
       <div class="card"><h3>Evaluación del modelo</h3><p class="m">PR-AUC en el periodo de prueba, con partición cronológica. El modelo se usa solo si supera la línea base.</p><div id="bars"></div></div>
     </section>
 
-    <section id="blog" class="tab" hidden>
-      <div class="banner" style="--bg:url(https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=75)"><span>✎</span><div><h2>Canal comunitario.</h2><p>Espacio abierto, complementario al repositorio interno de lecciones. Los aportes son reales y públicos: no incluyas datos personales.</p></div><button class="solid" id="open-post">Escribir un aporte ＋</button></div>
-      <div class="filters"><div class="seg" id="seg"><button class="on" data-filter="Todos">Todos</button><button data-filter="Experiencia">Experiencias</button><button data-filter="Idea">Ideas</button><button data-filter="Reporte">Reportes</button></div><input id="search" type="search" placeholder="Buscar publicaciones…" aria-label="Buscar publicaciones"/></div>
-      <p id="blog-status" class="m" role="status">Cargando publicaciones…</p>
-      <div class="cards3" id="posts"></div>
+
+    <section id="buzon" class="tab" hidden>
+      <div class="card"><div class="hd"><div><h3>Reportes ciudadanos <span class="badge" id="rep-count">0</span></h3><p class="m">Enviados desde la web. Son privados: solo los administradores ven el DNI y el contenido.</p></div><button class="ghost" id="rep-reload" type="button">↻ Actualizar</button></div>
+        <div class="filters"><input id="rep-q" type="search" placeholder="Buscar por DNI, sector o texto…" aria-label="Buscar reportes"/></div>
+        <div class="tw"><table><thead><tr><th>Fecha</th><th>DNI</th><th>Sector</th><th>Tipo</th><th>Descripción</th><th></th></tr></thead><tbody id="rep-rows"></tbody></table></div>
+      </div>
     </section>
+
     <section id="sugerencias" class="tab" hidden>
-      <div class="banner" style="--bg:url(https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=75)"><span>❝</span><div><h2>Sugerencias rápidas.</h2><p>Un comentario corto, en una línea. Si quieres contar más, usa el Canal comunitario.</p></div></div>
-      <form id="q-form" class="card qform"><div class="qrow"><input id="q-alias" required minlength="2" maxlength="40" placeholder="Tu nombre o seudónimo · Ej.: Vecino de Bagua" aria-label="Tu nombre o seudónimo" autocomplete="nickname"/><select id="q-sector" aria-label="Tu sector"><option value="">Sector (opcional)</option><option>Bagua centro</option><option>Sector norte</option><option>Sector sur</option><option>Sector oeste</option><option>Sector este</option></select></div><textarea id="q-text" required minlength="5" maxlength="200" rows="2" placeholder="Ej.: Falta un contenedor frente al mercado." aria-label="Tu sugerencia"></textarea><div class="qrow end"><small class="m" id="q-count">0 / 200</small><div class="honeypot" aria-hidden="true"><input id="q-web" tabindex="-1" autocomplete="off"/></div><button class="solid" type="submit" id="q-send">Enviar sugerencia</button></div><p id="q-msg" class="m" role="status"></p></form>
-      <p id="q-status" class="m" role="status">Cargando sugerencias…</p>
-      <div id="qlist" class="qlist"></div>
+      <div class="card"><div class="hd"><div><h3>Sugerencias públicas <span class="badge" id="sug-count">0</span></h3><p class="m">Se muestran en la landing. Elimina las que no correspondan.</p></div><button class="ghost" id="sug-reload" type="button">↻ Actualizar</button></div>
+        <div class="qlist" id="sug-list" style="margin-top:18px"></div>
+      </div>
     </section>
 
   </main>
 </div>
 
-<dialog id="post-dialog"><form id="post-form"><div class="hd"><div><small class="eb">TU VOZ CUENTA</small><h3>Comparte un aporte</h3></div><button type="button" id="close-post" class="x" aria-label="Cerrar">×</button></div><p class="m">Tu aporte será público. No escribas teléfonos, direcciones exactas ni datos de otras personas.</p><label for="alias">Tu nombre o seudónimo</label><input id="alias" name="alias" required minlength="2" maxlength="40" placeholder="Ej.: Vecino de Bagua" autocomplete="nickname"/><label for="sector">Tu sector (opcional)</label><select id="sector" name="sector"><option value="">Prefiero no decirlo</option><option>Bagua centro</option><option>Sector norte</option><option>Sector sur</option><option>Sector oeste</option><option>Sector este</option></select><label for="title">Título corto</label><input id="title" name="title" required minlength="5" maxlength="120" placeholder="Ej.: Basura acumulada junto al mercado"/><label for="category">¿Qué quieres compartir?</label><select id="category" name="category"><option value="Experiencia">Experiencia · algo que viví u observé</option><option value="Idea">Idea · una propuesta para mejorar</option><option value="Reporte">Reporte · un problema en mi zona</option></select><label for="content">Cuéntanos con detalle</label><textarea id="content" name="content" required minlength="20" maxlength="3000" rows="5" placeholder="Ej.: Desde hace tres días hay bolsas sin recoger en la esquina del mercado, cerca del puente. El camión pasa, pero no llega a esta calle."></textarea><div class="honeypot" aria-hidden="true"><label>Sitio web<input name="website" tabindex="-1" autocomplete="off"/></label></div><p id="form-status" role="status"></p><button class="solid" type="submit" id="submit-post">Publicar aporte ↗</button></form></dialog>
 
 <script>
 const $=(id:string)=>document.getElementById(id)!;
-const authorOf=(f:HTMLFormElement)=>{const d=new FormData(f);const a=String(d.get('alias')||'').trim(),s=String(d.get('sector')||'');return s?`${a} · ${s}`:a;};
 const zonas=['Bagua centro','Sector norte','Sector sur','Sector oeste','Sector este'];
 const residuos=['Orgánicos','Mixtos','Plásticos','Papel y cartón','Escombros'];
 const fuentes=['Registro operativo','Reporte ciudadano','Importación'];
 const esc=(s:string)=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]!));
 const store={get(k:string){try{return localStorage.getItem(k)}catch{return null}},set(k:string,v:string){try{localStorage.setItem(k,v)}catch{}}};
 // ---- pestañas
-function go(t:string){document.querySelectorAll<HTMLElement>('.tab').forEach(s=>s.hidden=s.id!==t);document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',(b as HTMLElement).dataset.tab===t));$('note').hidden=t==='blog';history.replaceState(null,'','#'+t);scrollTo(0,0);}
+function go(t:string){document.querySelectorAll<HTMLElement>('.tab').forEach(s=>s.hidden=s.id!==t);document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',(b as HTMLElement).dataset.tab===t));$('note').hidden=t==='buzon'||t==='sugerencias';history.replaceState(null,'','#'+t);scrollTo(0,0);}
 document.querySelectorAll<HTMLElement>('[data-tab],[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.tab||b.dataset.go!)));
 // ---- resumen
 const serie=[1,2,3,1,2,1,3,2,2,1,2,2,2,1];
@@ -146,26 +147,32 @@ $('fichas').addEventListener('click',e=>{const b=(e.target as HTMLElement).close
 lec();
 // ---- indicadores / modelo
 const rc=[['Línea base (recurrencia reciente)',0.41],['Regresión logística',0.58],['Árbol de decisión',0.55],['Random Forest',0.63]];$('bars').innerHTML=rc.map(([z,n])=>`<div class="bar wide"><span>${z}</span><div><i style="width:${(n as number)*100}%"></i></div><b>${(n as number).toFixed(2)}</b></div>`).join('');
-// ---- canal comunitario (real)
-type Post={id:string;author:string;title:string;content:string;category:string;created_at:string};
-let posts:Post[]=[],filter='Todos';
-async function load(){try{const r=await fetch('/api/posts',{cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error);posts=d.posts;$('blog-status').textContent=`${posts.length} aportes compartidos · Actualización automática cada 15 segundos.`;render();}catch{$('blog-status').textContent='No se pudo conectar con el servidor. Reintentando…';}}
-function render(){const q=($('search') as HTMLInputElement).value.toLowerCase();const v=posts.filter(p=>(filter==='Todos'||p.category===filter)&&`${p.title} ${p.content} ${p.author}`.toLowerCase().includes(q));const root=$('posts');root.replaceChildren();if(!v.length){const e=document.createElement('div');e.className='empty';e.textContent=posts.length?'No hay aportes que coincidan.':'Este espacio empieza contigo. Comparte la primera idea.';root.append(e);return;}
-v.forEach(p=>{const c=document.createElement('article');c.className='card';const b=document.createElement('span');b.className='tag md';b.textContent=p.category;const t=document.createElement('h3');t.textContent=p.title;const x=document.createElement('p');x.textContent=p.content;x.className='pre';const m=document.createElement('small');m.className='m';const dt=new Date(p.created_at);m.textContent=`${p.author} · ${isNaN(dt.getTime())?'':dt.toLocaleDateString('es-PE',{day:'numeric',month:'short',year:'numeric'})}`;c.append(b,t,x,m);root.append(c);});}
-document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter!;document.querySelectorAll('[data-filter]').forEach(e=>e.classList.toggle('on',e===b));render();}));
-$('search').addEventListener('input',render);
-const dlg=$('post-dialog') as HTMLDialogElement,form=$('post-form') as HTMLFormElement;
-$('open-post').addEventListener('click',()=>{$('form-status').textContent='';dlg.showModal();});$('close-post').addEventListener('click',()=>dlg.close());
-form.addEventListener('submit',async e=>{e.preventDefault();const btn=$('submit-post') as HTMLButtonElement;btn.disabled=true;$('form-status').textContent='Publicando…';try{const r=await fetch('/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...Object.fromEntries(new FormData(form)),author:authorOf(form)})});const d=await r.json();if(!r.ok)throw Error(d.error||'No se pudo publicar.');await load();form.reset();dlg.close();$('blog-status').textContent='¡Aporte publicado! Ya pueden verlo los demás participantes.';}catch(err){$('form-status').textContent=err instanceof Error?err.message:'Error al publicar.';}finally{btn.disabled=false;}});
-setInterval(()=>{if(!document.hidden)load();},15000);load();
-// ---- sugerencias rápidas (real)
-let quick:Post[]=[];
-async function loadQ(){try{const r=await fetch('/api/posts?type=quick',{cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error);quick=d.posts;$('q-status').textContent=`${quick.length} sugerencias · Actualización automática cada 15 segundos.`;renderQ();}catch{$('q-status').textContent='No se pudo conectar con el servidor. Reintentando…';}}
-function renderQ(){const root=$('qlist');root.replaceChildren();if(!quick.length){const e=document.createElement('div');e.className='empty';e.textContent='Aún no hay sugerencias. Deja la primera.';root.append(e);return;}
-quick.forEach(p=>{const row=document.createElement('div');row.className='qitem';const t=document.createElement('p');t.textContent=p.content;const m=document.createElement('small');m.className='m';const dt=new Date(p.created_at);m.textContent=`${p.author} · ${isNaN(dt.getTime())?'':dt.toLocaleDateString('es-PE',{day:'numeric',month:'short'})}`;row.append(t,m);root.append(row);});}
-$('q-text').addEventListener('input',()=>{$('q-count').textContent=`${($('q-text') as HTMLTextAreaElement).value.length} / 200`;});
-$('q-form').addEventListener('submit',async e=>{e.preventDefault();const btn=$('q-send') as HTMLButtonElement;const a=($('q-alias') as HTMLInputElement).value.trim(),sec=($('q-sector') as HTMLSelectElement).value;btn.disabled=true;$('q-msg').textContent='Enviando…';try{const r=await fetch('/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({author:sec?`${a} · ${sec}`:a,title:'Sugerencia',content:($('q-text') as HTMLTextAreaElement).value.trim(),category:'Sugerencia',website:($('q-web') as HTMLInputElement).value})});const d=await r.json();if(!r.ok)throw Error(d.error||'No se pudo enviar.');($('q-text') as HTMLTextAreaElement).value='';$('q-count').textContent='0 / 200';$('q-msg').textContent='¡Gracias! Tu sugerencia ya es visible.';await loadQ();}catch(err){$('q-msg').textContent=err instanceof Error?err.message:'Error al enviar.';}finally{btn.disabled=false;}});
-setInterval(()=>{if(!document.hidden)loadQ();},15000);loadQ();
+// ---- acceso y datos reales (solo administradores)
+type Row={id:string;author:string;title:string;content:string;category:string;created_at:string;dni:string|null;sector:string|null};
+let rows:Row[]=[];
+const fmt=(iso:string)=>{const d=new Date(iso);return isNaN(d.getTime())?'':d.toLocaleString('es-PE',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});};
+function lock(){$('app').hidden=true;$('gate').hidden=false;}
+function unlock(){$('gate').hidden=true;$('app').hidden=false;loadAdmin();}
+async function loadAdmin(){try{const r=await fetch('/api/admin/posts',{cache:'no-store'});if(r.status===401){lock();return;}if(!r.ok)return;rows=(await r.json()).posts;renderAdmin();}catch{}}
+function cell(tr:HTMLElement,text:string,cls=''){const td=document.createElement('td');td.textContent=text;if(cls)td.className=cls;tr.append(td);return td;}
+async function del(id:string){if(!confirm('¿Eliminar este mensaje de forma permanente?'))return;const r=await fetch('/api/admin/posts/'+id,{method:'DELETE'});if(r.status===401)lock();else await loadAdmin();}
+function delBtn(id:string){const b=document.createElement('button');b.type='button';b.className='lnk';b.textContent='Eliminar';b.addEventListener('click',()=>del(id));return b;}
+function renderAdmin(){
+  const q=(($('rep-q') as HTMLInputElement).value||'').toLowerCase();
+  const reps=rows.filter(p=>p.category!=='Sugerencia'),sugs=rows.filter(p=>p.category==='Sugerencia');
+  $('rep-count').textContent=String(reps.length);$('sug-count').textContent=String(sugs.length);
+  const body=$('rep-rows');body.replaceChildren();
+  reps.filter(p=>`${p.dni||''} ${p.sector||''} ${p.title} ${p.content}`.toLowerCase().includes(q)).forEach(p=>{const tr=document.createElement('tr');cell(tr,fmt(p.created_at));cell(tr,p.dni||'—','mono');cell(tr,p.sector||'—');cell(tr,p.title);cell(tr,p.content,'wrap');const td=document.createElement('td');td.append(delBtn(p.id));tr.append(td);body.append(tr);});
+  if(!body.children.length){const tr=document.createElement('tr');const td=cell(tr,'Aún no hay reportes.','m');td.colSpan=6;body.append(tr);}
+  const list=$('sug-list');list.replaceChildren();
+  sugs.forEach(p=>{const row=document.createElement('div');row.className='qitem';const t=document.createElement('p');t.textContent=p.content;const m=document.createElement('small');m.className='m';m.textContent=[p.author,p.sector,fmt(p.created_at)].filter(Boolean).join(' · ');row.append(t,m,delBtn(p.id));list.append(row);});
+  if(!sugs.length){const e=document.createElement('div');e.className='empty';e.textContent='Aún no hay sugerencias.';list.append(e);}
+}
+$('rep-q').addEventListener('input',renderAdmin);$('rep-reload').addEventListener('click',loadAdmin);$('sug-reload').addEventListener('click',loadAdmin);
+$('gate-form').addEventListener('submit',async e=>{e.preventDefault();const input=$('gate-pass') as HTMLInputElement;$('gate-msg').textContent='Verificando…';try{const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:input.value})});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'No se pudo iniciar sesión.');input.value='';$('gate-msg').textContent='';unlock();}catch(err){$('gate-msg').textContent=err instanceof Error?err.message:'Error.';}});
+$('logout').addEventListener('click',async()=>{await fetch('/api/admin/logout',{method:'POST'});lock();});
+setInterval(()=>{if(!document.hidden&&!$('app').hidden)loadAdmin();},10000);
+(async()=>{try{const r=await fetch('/api/admin/session',{cache:'no-store'});if(r.ok)unlock();else lock();}catch{lock();}})();
 const h=location.hash.slice(1);if(h&&document.getElementById(h)?.classList.contains('tab'))go(h);
 </script>
 </body>
