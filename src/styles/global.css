@@ -52,7 +52,7 @@ input[type=range]{width:100%;accent-color:var(--blue)}
 .closing{text-align:center;padding:120px 22px}.closing .btn{margin-top:30px}
 footer{padding:36px 22px;max-width:1080px;margin:auto;color:var(--mut);font-size:12px;line-height:1.6}footer p{margin:0 0 8px}footer b{color:var(--ink);font-weight:600}
 dialog{border:0;border-radius:28px;padding:32px;width:min(520px,calc(100% - 32px));box-shadow:0 30px 100px rgba(0,0,0,.3);color:var(--ink);background:var(--bg)}dialog::backdrop{background:rgba(0,0,0,.4);backdrop-filter:blur(8px)}
-dialog form{display:grid}dialog h2{font-size:30px}.dialog-top{display:flex;justify-content:space-between;align-items:start}#close-post{border:0;background:var(--alt);color:var(--ink);width:32px;height:32px;border-radius:50%;font-size:20px}
+dialog form{display:grid}dialog h2{font-size:30px}.dialog-top{display:flex;justify-content:space-between;align-items:start}#close-post,#close-quick{border:0;background:var(--alt);color:var(--ink);width:32px;height:32px;border-radius:50%;font-size:20px}
 dialog input,dialog select,dialog textarea,#password{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg);color:var(--ink)}dialog label{margin:16px 0 6px}dialog p{color:var(--mut);font-size:14px}dialog .button{margin-top:18px}
 .honeypot{position:absolute;left:-9999px}
 @media(max-width:860px){nav a:nth-child(-n+2){display:none}.steps,.grid3,.cards.three,.simulator{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.c1{left:0}.c2{right:0}.ring{width:260px;height:260px}.ring-in{width:216px;height:216px}.ring-in strong{font-size:60px}.hero-visual{height:300px}}
