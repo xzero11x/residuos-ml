@@ -1,0 +1,7 @@
+**
+!.vercel
+!.vercel/output
+!.vercel/output/static
+!.vercel/output/static/**
+!server
+!server/**

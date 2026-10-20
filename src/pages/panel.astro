@@ -1,0 +1,156 @@
+---
+import '../styles/panel.css';
+export const prerender = true;
+---
+<!doctype html>
+<html lang="es">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="description" content="Prototipo del sistema de gestión del conocimiento: incidencias, riesgo por sector y semana, lecciones aprendidas, indicadores y canal comunitario."/><title>Panel · Bagua Circular</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"/></head>
+<body>
+<div class="app">
+  <aside class="side">
+    <a class="logo" href="/"><span><b>bagua</b>circular</span></a>
+    <nav id="tabs">
+      <button data-tab="resumen" class="on">▦ Resumen</button>
+      <button data-tab="incidencias">⌖ Incidencias</button>
+      <button data-tab="predicciones">✧ Riesgo semanal <em>ML</em></button>
+      <button data-tab="conocimiento">▭ Lecciones</button>
+      <button data-tab="reportes">▂▅▇ Indicadores</button>
+      <button data-tab="blog">✎ Canal comunitario <em class="live">REAL</em></button>
+    </nav>
+    <a class="back" href="/">‹ Volver al inicio</a>
+  </aside>
+
+  <main class="main">
+    <div class="note" id="note">ⓘ Prototipo académico · Datos sintéticos, sin conexión con registros de la Municipalidad Provincial de Bagua.</div>
+
+    <section id="resumen" class="tab">
+      <div class="kpis">
+        <div class="card"><small>Incidencias registradas</small><strong>54</strong><span>En el periodo seleccionado</span></div>
+        <div class="card"><small>Por verificar o atender</small><strong>8</strong><span class="o">Reportadas y verificadas</span></div>
+        <div class="card"><small>Sectores analizados</small><strong>5</strong><span>Sectores del prototipo</span></div>
+        <div class="card"><small>Atendidas o cerradas</small><strong>85%</strong><span>Sobre los registros del periodo</span></div>
+      </div>
+      <div class="row2">
+        <div class="card"><h3>Incidencias por día</h3><p class="m">Incidencias confirmadas durante los últimos 14 días</p><svg id="chart" viewBox="0 0 640 220" role="img" aria-label="Gráfico de incidencias"></svg></div>
+        <div class="card green"><small>RIESGO POR SECTOR Y SEMANA</small><h3>De reaccionar<br/>a prevenir.</h3><p>Estima qué sectores podrían registrar una incidencia la próxima semana, para priorizar inspecciones.</p><button data-go="predicciones">Ver riesgo semanal ↗</button></div>
+      </div>
+      <div class="row2b">
+        <div class="card"><div class="hd"><div><h3>Incidencias recientes</h3><p class="m">Seguimiento de los reportes en el periodo</p></div><button class="lnk" data-go="incidencias">Ver todas →</button></div><div id="recent"></div></div>
+        <div class="card"><h3>Sectores con más incidencias</h3><p class="m">Recurrencia en el periodo</p><div id="zones"></div></div>
+      </div>
+    </section>
+
+    <section id="incidencias" class="tab" hidden>
+      <div class="card"><div class="hd"><div><h3>Registro de incidencias <span class="badge" id="count">54</span></h3><p class="m">Verifica, descarta o actualiza el estado de cada incidencia.</p></div><button class="ghost" id="export">⭳ Exportar CSV</button></div>
+        <div class="filters"><input id="q" type="search" placeholder="Buscar sector o tipo de residuo…" aria-label="Buscar"/><select id="fp" aria-label="Prioridad"><option value="">Toda prioridad</option><option>Alta</option><option>Media</option><option>Baja</option></select><select id="fe" aria-label="Estado"><option value="">Todo estado</option><option>Reportada</option><option>Verificada</option><option>Atendida</option><option>Cerrada</option><option>Descartada</option></select></div>
+        <div class="tw"><table><thead><tr><th>Sector</th><th>Fecha y hora</th><th>Residuo</th><th>Fuente</th><th>Prioridad</th><th>Estado</th></tr></thead><tbody id="rows"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="predicciones" class="tab" hidden>
+      <div class="card hd"><div><small class="eb">REGRESIÓN LOGÍSTICA · MODELO EXPERIMENTAL</small><h3>¿Qué sectores podrían tener una incidencia la próxima semana?</h3><p class="m">Probabilidad de al menos una incidencia confirmada en cada sector durante la semana elegida.</p></div><label class="date">Semana a estimar<select id="pweek"></select></label></div>
+      <div class="preds" id="preds"></div>
+      <p class="m foot">Modelo v0.3 · Entrenado con datos sintéticos · Actualizado el 19 oct 2026 · Calidad de datos: 94%. Los factores asociados no se interpretan como causas, y la decisión final es siempre del responsable.</p>
+    </section>
+
+    <section id="conocimiento" class="tab" hidden>
+      <div class="banner" style="--bg:url(https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=75)"><span>▭</span><div><h2>Lecciones aprendidas.</h2><p>Cada atención deja una ficha. Solo las fichas validadas se muestran como recomendación institucional.</p></div></div>
+      <div class="filters"><div class="seg" id="lseg"><button class="on" data-l="">Todas</button><button data-l="Borrador">Borrador</button><button data-l="En revisión">En revisión</button><button data-l="Validada">Validadas</button><button data-l="Obsoleta">Obsoletas</button></div></div>
+      <div class="cards3" id="fichas"></div>
+    </section>
+
+    <section id="reportes" class="tab" hidden>
+      <p class="m" style="margin:0 0 14px">Indicadores propuestos para evaluar el componente de gestión del conocimiento (valores ilustrativos, aún sin línea base).</p>
+      <div class="kpis five">
+        <div class="card"><small>Completitud de incidencias</small><strong>94%</strong><span>Campos mínimos completos</span></div>
+        <div class="card"><small>Lecciones validadas</small><strong>80%</strong><span>12 de 15 fichas</span></div>
+        <div class="card"><small>Reutilización</small><strong>38%</strong><span class="o">Atenciones con lección</span></div>
+        <div class="card"><small>Tiempo de recuperación</small><strong>3 min</strong><span>Hallar una solución</span></div>
+        <div class="card"><small>Actualización documental</small><strong>71%</strong><span class="o">Fichas vigentes revisadas</span></div>
+      </div>
+      <div class="card"><h3>Evaluación del modelo</h3><p class="m">PR-AUC en el periodo de prueba, con partición cronológica. El modelo se usa solo si supera la línea base.</p><div id="bars"></div></div>
+    </section>
+
+    <section id="blog" class="tab" hidden>
+      <div class="banner" style="--bg:url(https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=75)"><span>✎</span><div><h2>Canal comunitario.</h2><p>Espacio abierto, complementario al repositorio interno de lecciones. Los aportes son reales y públicos: no incluyas datos personales.</p></div><button class="solid" id="open-post">Escribir un aporte ＋</button></div>
+      <div class="filters"><div class="seg" id="seg"><button class="on" data-filter="Todos">Todos</button><button data-filter="Experiencia">Experiencias</button><button data-filter="Idea">Ideas</button><button data-filter="Reporte">Reportes</button></div><input id="search" type="search" placeholder="Buscar publicaciones…" aria-label="Buscar publicaciones"/></div>
+      <p id="blog-status" class="m" role="status">Cargando publicaciones…</p>
+      <div class="cards3" id="posts"></div>
+    </section>
+  </main>
+</div>
+
+<dialog id="post-dialog"><form id="post-form"><div class="hd"><div><small class="eb">TU VOZ CUENTA</small><h3>Comparte un aporte</h3></div><button type="button" id="close-post" class="x" aria-label="Cerrar">×</button></div><p class="m">Tu aporte será público. No escribas teléfonos, direcciones exactas ni datos de otras personas.</p><label>Tu DNI</label><div class="dni-boxes" role="group" aria-label="DNI de 8 dígitos"><input class="dni-box" inputmode="numeric" autocomplete="off" maxlength="1" placeholder="1" aria-label="Dígito 1 del DNI"/><input class="dni-box" inputmode="numeric" autocomplete="off" maxlength="1" placeholder="2" aria-label="Dígito 2 del DNI"/><input class="dni-box" inputmode="numeric" autocomplete="off" maxlength="1" placeholder="3" aria-label="Dígito 3 del DNI"/><input class="dni-box" inputmode="numeric" autocomplete="off" maxlength="1" placeholder="4" aria-label="Dígito 4 del DNI"/><input class="dni-box" inputmode="numeric" autocomplete="off" maxlength="1" placeholder="5" aria-label="Dígito 5 del DNI"/><input class="dni-box" inputmode="numeric" autocomplete="off" maxlength="1" placeholder="6" aria-label="Dígito 6 del DNI"/><input class="dni-box" inputmode="numeric" autocomplete="off" maxlength="1" placeholder="7" aria-label="Dígito 7 del DNI"/><input class="dni-box" inputmode="numeric" autocomplete="off" maxlength="1" placeholder="8" aria-label="Dígito 8 del DNI"/></div><small class="dni-help">Solo para identificarte como vecino. No se publica completo: se mostrará como «DNI ••••••78».</small><label for="title">Título corto</label><input id="title" name="title" required minlength="5" maxlength="120" placeholder="Ej.: Basura acumulada junto al mercado"/><label for="category">¿Qué quieres compartir?</label><select id="category" name="category"><option value="Experiencia">Experiencia · algo que viví u observé</option><option value="Idea">Idea · una propuesta para mejorar</option><option value="Reporte">Reporte · un problema en mi zona</option></select><label for="content">Cuéntanos con detalle</label><textarea id="content" name="content" required minlength="20" maxlength="3000" rows="5" placeholder="Ej.: Desde hace tres días hay bolsas sin recoger en la esquina del mercado, cerca del puente. El camión pasa, pero no llega a esta calle."></textarea><div class="honeypot" aria-hidden="true"><label>Sitio web<input name="website" tabindex="-1" autocomplete="off"/></label></div><p id="form-status" role="status"></p><button class="solid" type="submit" id="submit-post">Publicar aporte ↗</button></form></dialog>
+
+<script>
+import {initDni,readDni,maskDni} from '../scripts/dni';
+const $=(id:string)=>document.getElementById(id)!;
+const zonas=['Bagua centro','Sector norte','Sector sur','Sector oeste','Sector este'];
+const residuos=['Orgánicos','Mixtos','Plásticos','Papel y cartón','Escombros'];
+const fuentes=['Registro operativo','Reporte ciudadano','Importación'];
+const esc=(s:string)=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]!));
+const store={get(k:string){try{return localStorage.getItem(k)}catch{return null}},set(k:string,v:string){try{localStorage.setItem(k,v)}catch{}}};
+// ---- pestañas
+function go(t:string){document.querySelectorAll<HTMLElement>('.tab').forEach(s=>s.hidden=s.id!==t);document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',(b as HTMLElement).dataset.tab===t));$('note').hidden=t==='blog';history.replaceState(null,'','#'+t);scrollTo(0,0);}
+document.querySelectorAll<HTMLElement>('[data-tab],[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.tab||b.dataset.go!)));
+// ---- resumen
+const serie=[1,2,3,1,2,1,3,2,2,1,2,2,2,1];
+(()=>{const w=640,h=220,p=30,max=4;const pts=serie.map((v,i)=>[p+i*(w-2*p)/(serie.length-1),h-p-v*(h-2*p)/max]);let g='';for(let i=0;i<=4;i++){const y=h-p-i*(h-2*p)/max;g+=`<line x1="${p}" x2="${w-p}" y1="${y}" y2="${y}" stroke="#e8e8ed" stroke-dasharray="4 4"/><text x="4" y="${y+4}" font-size="11" fill="#86868b">${i}</text>`;}
+const line=pts.map(q=>q.join(',')).join(' ');$('chart').innerHTML=g+`<polygon points="${p},${h-p} ${line} ${w-p},${h-p}" fill="#0071e3" opacity=".1"/><polyline points="${line}" fill="none" stroke="#0071e3" stroke-width="3" stroke-linejoin="round"/>`+pts.map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="4.5" fill="#fff" stroke="#0071e3" stroke-width="2.5"/>`).join('');})();
+// ---- incidencias (estados del diccionario de datos)
+const prio=['Alta','Media','Media','Alta','Media','Baja','Media','Alta','Baja','Media','Media','Alta'];
+const estFin=['Atendida','Cerrada','Atendida','Cerrada','Cerrada','Descartada','Atendida'];
+type Inc={zona:string;fecha:string;res:string;fuente:string;pri:string;est:string};
+const inc:Inc[]=Array.from({length:54},(_,i)=>{const d=new Date(2026,9,19-Math.floor(i*0.55));return{zona:zonas[(i*3+i%2)%5],fecha:`${String(d.getDate()).padStart(2,'0')}-oct. · ${i%3===0?'07:30':i%3===1?'13:00':'18:30'}`,res:residuos[(i*2+i%3)%5],fuente:fuentes[i%3],pri:prio[i%12],est:i<5?'Reportada':i<8?'Verificada':estFin[i%7]};});
+$('recent').innerHTML=inc.slice(0,4).map(r=>`<div class="li"><span class="pin">⌖</span><div><b>${r.zona}</b><small>${r.res} · ${r.fecha}</small></div><span class="tag ${r.pri}">${r.pri}</span></div>`).join('');
+const zc=zonas.map((z,i)=>[z,[16,13,10,8,7][i]]);$('zones').innerHTML=zc.map(([z,n])=>`<div class="bar"><span>${z}</span><div><i style="width:${(n as number)/16*100}%"></i></div><b>${n}</b></div>`).join('');
+const estados=['Reportada','Verificada','Atendida','Cerrada','Descartada'];
+function table(){const q=(($('q') as HTMLInputElement).value).toLowerCase(),fp=($('fp') as HTMLSelectElement).value,fe=($('fe') as HTMLSelectElement).value;const v=inc.map((r,i)=>({r,i})).filter(({r})=>(!fp||r.pri===fp)&&(!fe||r.est===fe)&&`${r.zona} ${r.res}`.toLowerCase().includes(q));$('count').textContent=String(v.length);
+$('rows').innerHTML=v.slice(0,40).map(({r,i})=>`<tr><td><span class="pin">⌖</span><b>${r.zona}</b></td><td>${r.fecha}</td><td>${r.res}</td><td>${r.fuente}</td><td><span class="tag ${r.pri}">${r.pri}</span></td><td><select class="st ${r.est}" data-i="${i}" aria-label="Estado de la incidencia">${estados.map(e=>`<option${e===r.est?' selected':''}>${e}</option>`).join('')}</select></td></tr>`).join('')||'<tr><td colspan="6" class="m">Sin resultados.</td></tr>';}
+['q','fp','fe'].forEach(i=>$(i).addEventListener('input',table));table();
+$('rows').addEventListener('change',e=>{const t=e.target as HTMLSelectElement;if(t.dataset.i){inc[Number(t.dataset.i)].est=t.value;t.className='st '+t.value;}});
+$('export').addEventListener('click',()=>{const csv='sector,fecha,residuo,fuente,prioridad,estado\n'+inc.map(r=>[r.zona,r.fecha,r.res,r.fuente,r.pri,r.est].join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='incidencias-demo.csv';a.click();});
+// ---- riesgo por sector y semana
+const semanas=['20 – 26 oct 2026','27 oct – 2 nov 2026','3 – 9 nov 2026','10 – 16 nov 2026'];
+$('pweek').innerHTML=semanas.map((s,i)=>`<option value="${i}">${s}</option>`).join('');
+const base=[68,52,41,33,22];
+const factores=[['Incidencias previas (4 sem): 6','Frecuencia de recojo: 2 por semana','Días desde la última atención: 9'],['Incidencias previas (4 sem): 4','Frecuencia de recojo: 3 por semana','Días desde la última atención: 6'],['Incidencias previas (4 sem): 3','Frecuencia de recojo: 3 por semana','Días desde la última atención: 5'],['Incidencias previas (4 sem): 2','Frecuencia de recojo: 4 por semana','Días desde la última atención: 3'],['Incidencias previas (4 sem): 1','Frecuencia de recojo: 4 por semana','Días desde la última atención: 2']];
+const decs=['Sin decisión registrada','Inspección preventiva','Ajustar frecuencia de recojo','Reforzar contenedores','Sin acción por ahora'];
+function pred(){const wk=Number((($('pweek')) as HTMLSelectElement).value);$('preds').innerHTML=zonas.map((z,i)=>{const p=Math.max(8,Math.min(92,base[i]+[0,-4,3,-2][wk]*(i%2?1:-1)+(wk*i%3)));const lv=p>=60?['Riesgo alto','hi']:p>=40?['Riesgo medio','md']:['Riesgo bajo','lo'];const k=`dec:${i}:${wk}`;const cur=store.get(k)||decs[0];
+return`<div class="card"><div class="hd"><span class="pin">⌖</span><span class="tag ${lv[1]}">${lv[0]}</span></div><h3>${z}</h3><div class="big">${p}<span>%</span></div><p class="m">Probabilidad de al menos una incidencia en la semana.</p><div class="bar1"><i style="width:${p}%"></i></div><ul class="fx">${factores[i].map(f=>`<li>${f}</li>`).join('')}</ul><label class="dec">Decisión del responsable<select data-k="${k}">${decs.map(d=>`<option${d===cur?' selected':''}>${d}</option>`).join('')}</select></label></div>`;}).join('');}
+$('pweek').addEventListener('input',pred);pred();
+$('preds').addEventListener('change',e=>{const t=e.target as HTMLSelectElement;if(t.dataset.k)store.set(t.dataset.k,t.value);});
+// ---- lecciones aprendidas (flujo borrador → revisión → validada → obsoleta)
+type Ficha={t:string;sector:string;per:string;accion:string;res:string;lec:string;resp:string;est:string;uso:number};
+const fichas:Ficha[]=[
+{t:'Refuerzo de recojo en días de mercado',sector:'Bagua centro',per:'Sem. 40',accion:'Recojo adicional los lunes',res:'Resuelta',lec:'Un recojo extra el lunes evita la acumulación del fin de semana.',resp:'Resp. de limpieza pública',est:'Validada',uso:9},
+{t:'Contenedores adicionales cerca del puente',sector:'Sector norte',per:'Sem. 39',accion:'Instalar 2 contenedores',res:'Parcial',lec:'Más contenedores reducen incidencias, pero requieren vaciado frecuente.',resp:'Supervisor de zona',est:'Validada',uso:5},
+{t:'Aviso vecinal por cambio de ruta',sector:'Sector sur',per:'Sem. 38',accion:'Comunicar horarios a vecinos',res:'Resuelta',lec:'Avisar un cambio de horario previene residuos fuera de hora.',resp:'Analista ambiental',est:'Validada',uso:4},
+{t:'Limpieza de punto crítico en la ribera',sector:'Sector oeste',per:'Sem. 41',accion:'Limpieza y señalización',res:'Reincidente',lec:'Sin control posterior el punto vuelve a acumular en pocos días.',resp:'Personal operativo',est:'En revisión',uso:0},
+{t:'Retiro de escombros a demanda',sector:'Sector este',per:'Sem. 41',accion:'Coordinar retiro programado',res:'Resuelta',lec:'Programar el retiro de escombros evita sumas de varios días.',resp:'Personal operativo',est:'Borrador',uso:0},
+{t:'Ruta antigua del sector sur',sector:'Sector sur',per:'Sem. 30',accion:'Recojo por ruta anterior',res:'Parcial',lec:'Ya no aplica tras el cambio de rutas de 2026.',resp:'Supervisor de zona',est:'Obsoleta',uso:2}];
+let lf='';
+const next:Record<string,string>={'Borrador':'En revisión','En revisión':'Validada','Validada':'Obsoleta'};
+const cta:Record<string,string>={'Borrador':'Enviar a revisión','En revisión':'Validar ficha','Validada':'Marcar obsoleta'};
+function lec(){const v=fichas.map((f,i)=>({f,i})).filter(({f})=>!lf||f.est===lf);$('fichas').innerHTML=v.map(({f,i})=>`<article class="card"><span class="tag ${f.est==='Validada'?'lo':f.est==='Obsoleta'?'hi':'md'}">${f.est}</span><h3>${esc(f.t)}</h3><p class="m">${f.sector} · ${f.per} · ${esc(f.accion)} · ${f.res}</p><p class="les">${esc(f.lec)}</p><small class="m">${f.resp}${f.est==='Validada'?` · Usada en ${f.uso} atenciones`:''}</small>${next[f.est]?`<button class="ghost" data-n="${i}">${cta[f.est]}</button>`:''}</article>`).join('')||'<div class="empty">Sin fichas en este estado.</div>';}
+$('lseg').addEventListener('click',e=>{const b=(e.target as HTMLElement).closest('button');if(!b)return;lf=b.dataset.l||'';document.querySelectorAll('#lseg button').forEach(x=>x.classList.toggle('on',x===b));lec();});
+$('fichas').addEventListener('click',e=>{const b=(e.target as HTMLElement).closest('button');if(!b||b.dataset.n===undefined)return;const f=fichas[Number(b.dataset.n)];f.est=next[f.est];lec();});
+lec();
+// ---- indicadores / modelo
+const rc=[['Línea base (recurrencia reciente)',0.41],['Regresión logística',0.58],['Árbol de decisión',0.55],['Random Forest',0.63]];$('bars').innerHTML=rc.map(([z,n])=>`<div class="bar wide"><span>${z}</span><div><i style="width:${(n as number)*100}%"></i></div><b>${(n as number).toFixed(2)}</b></div>`).join('');
+// ---- canal comunitario (real)
+type Post={id:string;author:string;title:string;content:string;category:string;created_at:string};
+let posts:Post[]=[],filter='Todos';
+async function load(){try{const r=await fetch('/api/posts',{cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error);posts=d.posts;$('blog-status').textContent=`${posts.length} aportes compartidos · Actualización automática cada 15 segundos.`;render();}catch{$('blog-status').textContent='No se pudo conectar con el servidor. Reintentando…';}}
+function render(){const q=($('search') as HTMLInputElement).value.toLowerCase();const v=posts.filter(p=>(filter==='Todos'||p.category===filter)&&`${p.title} ${p.content} ${p.author}`.toLowerCase().includes(q));const root=$('posts');root.replaceChildren();if(!v.length){const e=document.createElement('div');e.className='empty';e.textContent=posts.length?'No hay aportes que coincidan.':'Este espacio empieza contigo. Comparte la primera idea.';root.append(e);return;}
+v.forEach(p=>{const c=document.createElement('article');c.className='card';const b=document.createElement('span');b.className='tag md';b.textContent=p.category;const t=document.createElement('h3');t.textContent=p.title;const x=document.createElement('p');x.textContent=p.content;x.className='pre';const m=document.createElement('small');m.className='m';const dt=new Date(p.created_at);m.textContent=`${p.author} · ${isNaN(dt.getTime())?'':dt.toLocaleDateString('es-PE',{day:'numeric',month:'short',year:'numeric'})}`;c.append(b,t,x,m);root.append(c);});}
+document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter!;document.querySelectorAll('[data-filter]').forEach(e=>e.classList.toggle('on',e===b));render();}));
+$('search').addEventListener('input',render);
+const dlg=$('post-dialog') as HTMLDialogElement,form=$('post-form') as HTMLFormElement;initDni(form);
+$('open-post').addEventListener('click',()=>{$('form-status').textContent='';dlg.showModal();});$('close-post').addEventListener('click',()=>dlg.close());
+form.addEventListener('submit',async e=>{e.preventDefault();const btn=$('submit-post') as HTMLButtonElement;const dni=readDni(form);if(!dni){$('form-status').textContent='Escribe los 8 dígitos de tu DNI.';return;}btn.disabled=true;$('form-status').textContent='Publicando…';try{const r=await fetch('/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...Object.fromEntries(new FormData(form)),author:maskDni(dni)})});const d=await r.json();if(!r.ok)throw Error(d.error||'No se pudo publicar.');await load();form.reset();dlg.close();$('blog-status').textContent='¡Aporte publicado! Ya pueden verlo los demás participantes.';}catch(err){$('form-status').textContent=err instanceof Error?err.message:'Error al publicar.';}finally{btn.disabled=false;}});
+setInterval(()=>{if(!document.hidden)load();},15000);load();
+const h=location.hash.slice(1);if(h&&document.getElementById(h)?.classList.contains('tab'))go(h);
+</script>
+</body>
+</html>
