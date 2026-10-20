@@ -1,4 +1,4 @@
-# Exposición · Bagua Circular
+# Exposición · BaguaLimpia
 
 Enlace público actual: https://pie-tuning-myers-receiver.trycloudflare.com
 

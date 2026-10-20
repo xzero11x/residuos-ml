@@ -1,4 +1,4 @@
-# Bagua Circular
+# BaguaLimpia
 
 Web responsive en Astro con simulador educativo, blog compartido y panel de administración. Backend Node.js + SQLite en Docker, sin cuentas externas.
 

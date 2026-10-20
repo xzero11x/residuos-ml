@@ -53,4 +53,4 @@ const server=http.createServer(async(req,res)=>{
   res.writeHead(200,{'Content-Type':types[extname(file)]||'application/octet-stream','X-Content-Type-Options':'nosniff','Cache-Control':path.startsWith('/_astro/')?'public,max-age=31536000,immutable':'no-cache'});res.end(req.method==='HEAD'?undefined:readFileSync(file));
  }catch{send(400,{error:'No se pudo procesar la solicitud.'});}
 });
-server.requestTimeout=15000;server.listen(Number(process.env.PORT||4322),'0.0.0.0',()=>console.log('Bagua Circular disponible en el puerto 4322'));
+server.requestTimeout=15000;server.listen(Number(process.env.PORT||4322),'0.0.0.0',()=>console.log('BaguaLimpia disponible en el puerto 4322'));
