@@ -49,3 +49,6 @@ select.st.Verificada{background:#e8f1fd;color:#0071e3}select.st.Atendida,select.
 @media(max-width:980px){.kpis.five{grid-template-columns:1fr 1fr}.bar.wide{grid-template-columns:130px 1fr 40px}}
 .dni-boxes{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}.dni-box{width:100%;text-align:center;font-size:22px;font-weight:600;padding:12px 0!important;border-radius:12px!important}.dni-box::placeholder{color:#c7c7cc;font-weight:400}.dni-box:focus{outline:2px solid var(--g);outline-offset:0}
 .dni-help{display:block;margin-top:8px;font-size:12px;color:var(--mut)}dialog form>label:not([for]){font-size:14px;font-weight:500;margin:14px 0 6px}dialog textarea::placeholder,dialog input::placeholder{color:#a1a1a6}
+
+.qform{margin:16px 0;display:grid;gap:12px}.qrow{display:flex;gap:12px;flex-wrap:wrap}.qrow.end{justify-content:space-between;align-items:center}.qform input,.qform select,.qform textarea{border:0;background:#fff;border-radius:12px;padding:12px 14px;font-size:15px;font-family:inherit}.qform input{flex:1;min-width:200px}.qform textarea{resize:vertical}
+.qlist{display:grid;gap:10px}.qitem{background:var(--alt);border-radius:18px;padding:16px 20px}.qitem p{margin:0 0 6px;font-size:16px;overflow-wrap:anywhere}

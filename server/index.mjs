@@ -35,13 +35,14 @@ const server=http.createServer(async(req,res)=>{
     if(path.startsWith('/api/admin/posts/')&&req.method==='DELETE'){const r=db.prepare('DELETE FROM posts WHERE id=?').run(path.split('/').pop());return send(r.changes?200:404,{ok:!!r.changes});}
     return send(404,{error:'Ruta no encontrada.'});
    }
-   if(path==='/api/posts'&&req.method==='GET')return send(200,{posts:db.prepare('SELECT * FROM posts ORDER BY created_at DESC LIMIT 200').all()});
+   if(path==='/api/posts'&&req.method==='GET'){const quick=url.searchParams.get('type')==='quick';return send(200,{posts:db.prepare(`SELECT * FROM posts WHERE category${quick?'=':'!='}'Sugerencia' ORDER BY created_at DESC LIMIT 200`).all()});}
    if(path==='/api/posts'&&req.method==='POST'){
     if(limited(req,'post',8))return send(429,{error:'Has enviado varios aportes. Espera un minuto.'});
     const input=await body(req);if(!input||typeof input!=='object')return send(400,{error:'Datos inválidos.'});
-    for(const [field,min,max] of [['author',2,60],['title',5,120],['content',20,3000]])if(typeof input[field]!=='string'||input[field].trim().length<min||input[field].trim().length>max)return send(400,{error:`Revisa ${field}: entre ${min} y ${max} caracteres.`});
-    if(!['Experiencia','Idea','Reporte'].includes(input.category)||input.website)return send(400,{error:'Aporte inválido.'});
-    const post={id:randomUUID(),author:input.author.trim(),title:input.title.trim(),content:input.content.trim(),category:input.category,created_at:new Date().toISOString()};
+    const quickPost=input.category==='Sugerencia';if(quickPost)input.title='Sugerencia';
+    for(const [field,min,max] of quickPost?[['author',2,60],['content',5,200]]:[['author',2,60],['title',5,120],['content',20,3000]])if(typeof input[field]!=='string'||input[field].trim().length<min||input[field].trim().length>max)return send(400,{error:`Revisa ${field}: entre ${min} y ${max} caracteres.`});
+    if(!['Experiencia','Idea','Reporte','Sugerencia'].includes(input.category)||input.website)return send(400,{error:'Aporte inválido.'});
+    const post={id:randomUUID(),author:input.author.trim(),title:String(input.title).trim(),content:input.content.trim(),category:input.category,created_at:new Date().toISOString()};
     db.prepare('INSERT INTO posts VALUES(?,?,?,?,?,?)').run(...Object.values(post));return send(201,{post});
    }
    return send(404,{error:'Ruta no encontrada.'});
